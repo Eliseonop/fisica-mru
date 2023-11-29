@@ -2,13 +2,7 @@ import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import Car from './Car'
 
-const CarField = ({
-  cars,
-  setCarPosition,
-  isMoving,
-  setIsMoving,
-  frictionCoefficient
-}) => {
+const CarField = ({ cars, setCarPosition, isMoving, frictionCoefficient }) => {
   const [distances, setDistances] = useState([])
 
   const calculateDistanceBetweenCars = (car1, car2) => {
@@ -16,6 +10,7 @@ const CarField = ({
   }
 
   const calculateBrakingDistance = (velocity, weight) => {
+    // Esta función aún devuelve valores en metros. Asegúrate de ajustar esto si es necesario.
     const gravity = 9.8
     const velocityInMetersPerSecond = (velocity * 1000) / 3600
     return (
@@ -24,13 +19,17 @@ const CarField = ({
     )
   }
 
-  const updatePosition = (prevPosition, velocity, weight) => {
-    const velocityInMetersPerSecond = (velocity * 1000) / 3600
-    let newPositionX =
-      prevPosition.x + (velocityInMetersPerSecond / weight) * 100
+  const updatePosition = (prevPosition, velocity) => {
+    // Convertir la velocidad de km/h a píxeles por segundo.
+    const conversionFactor = 1 // Ajusta este factor según tu escala
+    const velocityInPixelsPerSecond = (velocity * conversionFactor) / 3.6
+
+    let newPositionX = prevPosition.x + velocityInPixelsPerSecond
+
     if (newPositionX > window.innerWidth) {
       newPositionX -= window.innerWidth
     }
+
     return { ...prevPosition, x: newPositionX }
   }
 
@@ -42,35 +41,17 @@ const CarField = ({
         cars.forEach((car, i) => {
           const nextCar = cars[(i + 1) % cars.length]
           const distanceToNextCar = calculateDistanceBetweenCars(car, nextCar)
-
           newDistances.push(distanceToNextCar)
 
-          const newPosition = updatePosition(
-            car.position,
-            car.velocity,
-            car.weight
-          )
-
-          const brakingDistance = calculateBrakingDistance(
-            car.velocity,
-            car.weight
-          )
-
-          // if (
-          //   distanceToNextCar < brakingDistance ||
-          //   distanceToNextCar < 50 // asumiendo un ancho de carro de 50px
-          // ) {
-          //   setIsMoving(false)
-          // } else {
+          const newPosition = updatePosition(car.position, car.velocity)
           setCarPosition(car.id, newPosition)
-          // }
         })
         setDistances(newDistances)
       }, 50)
     }
 
     return () => clearInterval(interval)
-  }, [isMoving, cars, setCarPosition, setIsMoving, frictionCoefficient])
+  }, [isMoving, cars, setCarPosition])
 
   return (
     <>
@@ -99,7 +80,6 @@ CarField.propTypes = {
   ).isRequired,
   setCarPosition: PropTypes.func.isRequired,
   isMoving: PropTypes.bool.isRequired,
-  setIsMoving: PropTypes.func.isRequired,
   frictionCoefficient: PropTypes.number.isRequired
 }
 
