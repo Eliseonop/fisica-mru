@@ -20,7 +20,7 @@ const ControlPanel = ({
       name: car.name,
       image: car.image,
       weight: car.weight,
-      velocity: 80,
+      velocity: 10,
       position: { x: positionUltimate, y: 0 }
     }
 
@@ -40,7 +40,7 @@ const ControlPanel = ({
             <span>Numero</span>
             <span>Nombre</span>
             <span>Peso</span>
-            <span>Velocidad</span>
+            <span>Velocidad m/s</span>
           </div>
           {cars.map((car, i) => (
             <div key={i} className='flex justify-between px-4 py-2 gap-48 '>
@@ -84,6 +84,7 @@ const ControlPanel = ({
         </label>
         <input
           type='number'
+          value={0.5}
           placeholder='Coeficiente de Fricción'
           onChange={e => setFrictionCoefficient(Number(e.target.value))}
         />

@@ -3,7 +3,7 @@ import CarField from './components/CarField'
 import ControlPanel from './components/ControlPanel'
 
 const App = () => {
-  const [frictionCoefficient, setFrictionCoefficient] = useState(0.8) // Valor por defecto
+  const [frictionCoefficient, setFrictionCoefficient] = useState(0.5) // Valor por defecto
   const [isMoving, setIsMoving] = useState(false)
   const [cars, setCars] = useState([]) // Estado inicial vacío
 
